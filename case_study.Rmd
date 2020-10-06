@@ -1,0 +1,65 @@
+---
+title: "Case Study"
+author: "Talea Cornelius"
+date: "10/6/2020"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(broom)
+```
+
+```{r load data}
+library(p8105.datasets)
+
+data(nyc_airbnb)
+```
+
+```{r}
+str(nyc_airbnb)
+```
+
+```{r}
+nyc_airbnb %>%
+  count(room_type)
+
+nyc_airbnb %>%
+  count(neighbourhood_group)
+```
+> Does rating vary by neighborhood, room type, or both?
+
+```{r}
+nyc_airbnb %>%
+  group_by(room_type) %>%
+  summarise(round(mean(review_scores_location, na.rm=TRUE),2))
+
+nyc_airbnb %>%
+  group_by(neighbourhood_group) %>%
+  summarise(round(mean(review_scores_location, na.rm=TRUE),2))
+
+nyc_airbnb %>%
+  group_by(neighbourhood_group, room_type) %>%
+  summarise(round(mean(review_scores_location, na.rm=TRUE),2))
+```
+
+```{r}
+base <- lm(review_scores_location ~ 1, data = nyc_airbnb)
+room <- lm(review_scores_location ~ room_type, data = nyc_airbnb)
+neighborhood <- lm(review_scores_location ~ neighbourhood_group, data = nyc_airbnb)
+
+anova(base, room)
+anova(base, neighborhood)
+
+summary(lm(review_scores_location ~ neighbourhood_group + room_type, data = nyc_airbnb))
+tidy(lm(review_scores_location ~ neighbourhood_group + room_type, data = nyc_airbnb))
+```
+
+
+> How is price related to other variables?
+
+
+
+> Where are rentals located?
+
